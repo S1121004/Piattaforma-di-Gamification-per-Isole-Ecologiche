@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    # Comando per avviare il server. 0.0.0.0 permette l'accesso dall'esterno del container
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      # Sincronizza la tua cartella locale con quella del container
+      - .:/app
+    ports:
+      # Mappa la porta 8000 del tuo PC con la 8000 del container
+      - "8000:8000"
