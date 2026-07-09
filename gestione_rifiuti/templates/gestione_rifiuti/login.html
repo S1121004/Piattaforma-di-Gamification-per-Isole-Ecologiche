@@ -1,0 +1,20 @@
+{% extends 'gestione_rifiuti/base.html' %}
+
+{% block title %}Accedi - Isola Ecologica{% endblock %}
+
+{% block content %}
+    <h1>Accesso al Sistema 🔐</h1>
+    <p>Inserisci le tue credenziali per accedere.</p>
+
+    <div style="max-width: 400px; margin: 0 auto; background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn" style="width: 100%;">Accedi</button>
+        </form>
+        
+        <p style="text-align: center; margin-top: 15px; font-size: 0.9rem;">
+            <a href="{% url 'password_reset' %}" style="color: #6b7280; text-decoration: none;">Hai dimenticato la password?</a>
+        </p>
+    </div>
+{% endblock %}

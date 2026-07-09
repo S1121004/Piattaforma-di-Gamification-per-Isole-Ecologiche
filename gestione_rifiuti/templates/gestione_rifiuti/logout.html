@@ -1,0 +1,21 @@
+{% extends 'gestione_rifiuti/base.html' %}
+
+{% block title %}Logout - EcoGestione{% endblock %}
+
+{% block content %}
+    <div style="text-align: center; padding: 20px 0;">
+        <div style="font-size: 4rem; color: #10b981; margin-bottom: 20px;">
+            ✔️
+        </div>
+        
+        <h1>Sessione chiusa</h1>
+        <p style="font-size: 1.1rem; color: #6b7280; margin-bottom: 30px;">
+            Sei uscito correttamente dal sistema. Grazie per aver contribuito alla sostenibilità della nostra comunità!
+        </p>
+
+        <div style="display: flex; flex-direction: column; gap: 15px; max-width: 300px; margin: 0 auto;">
+            <a href="/login/" class="btn">Accedi di nuovo</a>
+            <a href="/" class="btn btn-outline" style="border: 2px solid #e5e7eb; color: #4b5563;">Torna alla Home pubblica</a>
+        </div>
+    </div>
+{% endblock %}

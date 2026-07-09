@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EcoGestione{% endblock %}</title>
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-hover: #059669;
+            --dark: #1f2937;
+            --light: #f3f4f6;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--light);
+            margin: 0;
+            padding: 0;
+        }
+        
+
+        /* --- LA BARRA DI NAVIGAZIONE --- */
+        .navbar {
+            background-color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            margin-left: 20px;
+        }
+
+        .btn-logout { color: #ef4444 !important; }
+
+        /* CONTENITORE SCHEDA */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        /* TABELLE E BOTTONI */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
+        th { color: #6b7280; font-size: 0.8rem; text-transform: uppercase; }
+        .btn {
+            background: var(--primary); color: white; padding: 10px 20px;
+            border-radius: 8px; text-decoration: none; display: inline-block;
+            border: none; cursor: pointer; font-weight: bold;
+        }
+        /* Stile per i menu a tendina */
+select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background-color: #ffffff;
+    font-size: 1rem;
+    color: #374151;
+    cursor: pointer;
+    appearance: none; /* Rimuove la freccia standard brutta */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 1.2rem;
+}
+
+select:focus {
+    border-color: #10b981;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Bottone speciale Oro per i premi */
+.btn-oro {
+    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+    color: white !important;
+    border: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-oro:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+}
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">♻️ EcoGestione</a>
+ <div style="display: flex; align-items: center; gap: 20px;">
+    {% if user.is_authenticated %}
+        <span style="color: #4b5563;">Ciao, <strong>{{ user.username }}</strong></span>
+
+        <!-- 1. SE È L'AMMINISTRATORE ASSOLUTO -->
+        {% if user.is_superuser %}
+            <a href="/dashboard-admin/" style="color: #3b82f6; font-weight: bold; text-decoration: none;">Dashboard Admin</a>
+        
+        <!-- 2. SE È UN OPERATORE ECOLOGICO -->
+        {% elif user.operatoreecologico %}
+            <a href="/punto-cassa/" style="color: #10b981; font-weight: bold; text-decoration: none;">Punto Cassa</a>
+        
+        <!-- 3. SE È UN CITTADINO NORMALE -->
+        {% else %}
+            <a href="/profilo/" style="color: #374151; text-decoration: none; font-weight: bold;">Profilo</a>
+            <a href="/area-riscatto/" style="color: #d97706; text-decoration: none; font-weight: bold;">🎁 Premi</a>
+        {% endif %}
+        <form action="/logout/" method="post" style="display:inline; margin: 0;">
+            {% csrf_token %}
+            <button type="submit" style="background: none; border: none; color: #ef4444; font-weight: bold; cursor: pointer; font-size: 1rem; padding: 0;">Esci</button>
+        </form>
+
+    {% else %}
+        <a href="/login/" style="color: #374151; text-decoration: none; font-weight: bold;">Accedi</a>
+        <a href="/registrazione/" style="background: #10b981; color: white; padding: 8px 15px; border-radius: 8px; text-decoration: none; font-weight: bold;">Registrati</a>
+    {% endif %}
+</div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+</body>
+</html>

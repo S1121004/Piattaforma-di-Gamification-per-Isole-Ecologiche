@@ -1,0 +1,62 @@
+{% extends 'gestione_rifiuti/base.html' %}
+
+{% block title %}Area Riscatto - EcoGestione{% endblock %}
+
+{% block content %}
+<div style="text-align: center; margin-bottom: 30px;">
+    <h1>EcoStore: Scegli il tuo Premio 🎁</h1>
+    <div style="display: inline-block; background: #d1fae5; color: #065f46; padding: 10px 20px; border-radius: 20px; font-weight: bold; font-size: 1.2rem; margin-top: 10px;">
+        Il tuo Saldo: {{ user.cittadino.saldo_ecopunti }} pt
+    </div>
+</div>
+
+{% if errore %}
+    <div style="background: #fee2e2; color: #991b1b; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; font-weight: bold;">
+        ⚠️ {{ errore }}
+    </div>
+{% endif %}
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px;">
+    
+    <div style="background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #f3f4f6;">
+        <h2 style="color: #2563eb; margin-top: 0;">🎫 Premi Immediati</h2>
+        <p style="color: #6b7280; font-size: 0.95rem; margin-bottom: 20px;">Ricevi subito un codice QR per servizi pubblici gratuiti.</p>
+        
+        {% for p in premi_servizi %}
+            <div style="display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #e5e7eb;">
+                <span style="font-weight: bold; font-size: 1.1rem;">{{ p.icona }} {{ p.nome }}</span>
+                <form method="POST" style="margin: 0;">
+                    {% csrf_token %}
+                    <input type="hidden" name="premio_id" value="{{ p.id }}">
+                    <button type="submit" class="btn" style="padding: 8px 15px; font-size: 0.9rem;">Riscatta ({{ p.sogliaPunti }} pt)</button> 
+                </form>
+            </div>
+        {% empty %}
+            <p style="color: #9ca3af; font-style: italic;">Nessun servizio disponibile al momento.</p>
+        {% endfor %}
+    </div>
+
+    <div style="background: white; border-radius: 15px; padding: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #f3f4f6;">
+        <h2 style="color: #16a34a; margin-top: 0;">🏠 Sconto TARI</h2>
+        <p style="color: #6b7280; font-size: 0.95rem; margin-bottom: 20px;">Applica una riduzione sulla tua prossima bolletta comunale.</p>
+        
+        {% for p in premi_tari %}
+            <div style="padding: 15px; border: 1px solid #e5e7eb; border-radius: 10px; margin-bottom: 15px; background: #f9fafb;">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="premio_id" value="{{ p.id }}">
+                    
+                    <div style="font-weight: bold; font-size: 1.1rem; margin-bottom: 15px;">
+                        {{ p.icona }} {{ p.nome }} <span style="color: #10b981;">({{ p.sogliaPunti }} pt)</span>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-oro" style="width: 100%; padding: 10px; background-color: #f59e0b; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">Richiedi Sconto</button>
+                </form>
+            </div>
+        {% empty %}
+            <p style="color: #9ca3af; font-style: italic;">Nessuno sconto TARI configurato al momento.</p>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

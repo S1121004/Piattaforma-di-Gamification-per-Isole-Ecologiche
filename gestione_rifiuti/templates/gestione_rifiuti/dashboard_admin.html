@@ -1,0 +1,63 @@
+{% extends 'gestione_rifiuti/base.html' %}
+{% block title %}Dashboard Amministratore{% endblock %}
+
+{% block content %}
+<h1 style="color: #1f2937; margin-bottom: 30px;">⚙️ Pannello di Controllo</h1>
+
+<div style="display: flex; gap: 30px;">
+    <!-- COLONNA SINISTRA: Gestione Rifiuti -->
+    <div style="flex: 1; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0; color: #16a34a;">Catalogo Rifiuti</h2>
+            <a href="{% url 'aggiungi_rifiuto' %}" class="btn" style="padding: 8px 15px; font-size: 0.9rem;">+ Aggiungi Nuovo</a>
+        </div>
+        
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead style="background: #f3f4f6; text-align: left;">
+                <tr>
+                    <th style="padding: 10px;">Nome Rifiuto</th>
+                    <th style="padding: 10px;">Punti / Unità</th>
+                    <th style="padding: 10px;">Azione</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in rifiuti %}
+                <tr style="border-bottom: 1px solid #e5e7eb;">
+                    <td style="padding: 10px;"><strong>{{ r.nome }}</strong></td>
+                    <td style="padding: 10px;">{{ r.punti_per_unita }} pt / {{ r.unita_di_misura }}</td>
+                    <td style="padding: 10px;"><a href="{% url 'modifica_rifiuto' r.id %}" style="color: #3b82f6; text-decoration: none; font-weight: bold;">✏️ Modifica</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- COLONNA DESTRA: Correzione Conferimenti -->
+    <div style="flex: 1; background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+        <h2 style="margin: 0 0 20px 0; color: #d97706;">Ultimi Conferimenti (Correzione Errori)</h2>
+        
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+            <thead style="background: #f3f4f6; text-align: left;">
+                <tr>
+                    <th style="padding: 10px;">Data</th>
+                    <th style="padding: 10px;">Cittadino (CF)</th>
+                    <th style="padding: 10px;">Q.tà / Punti</th>
+                    <th style="padding: 10px;">Azione</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in conferimenti %}
+                <tr style="border-bottom: 1px solid #e5e7eb;">
+                    <td style="padding: 10px;">{{ c.data_ora|date:"d/m/Y H:i" }}</td>
+                    <td style="padding: 10px;">{{ c.cittadino.codice_fiscale }}<br><small style="color:gray;">{{ c.rifiuto.nome }}</small></td>
+                    <td style="padding: 10px;">{{ c.quantita }} &rarr; <strong>{{ c.punti_generati }} pt</strong></td>
+                    <td style="padding: 10px;"><a href="{% url 'modifica_conferimento' c.id %}" style="color: #ef4444; text-decoration: none; font-weight: bold;">⚠️ Correggi</a></td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" style="padding: 10px; color: gray;">Nessun conferimento registrato.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

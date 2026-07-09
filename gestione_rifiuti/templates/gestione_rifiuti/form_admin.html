@@ -1,0 +1,23 @@
+{% extends 'gestione_rifiuti/base.html' %}
+{% block title %}Amministrazione - EcoGestione{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    
+    <h2 style="color: #1f2937; margin-top: 0; margin-bottom: 20px;">{{ titolo }}</h2>
+    
+    <form method="POST" style="background: #f9fafb; padding: 25px; border-radius: 10px; border: 1px solid #e5e7eb;">
+        {% csrf_token %}
+        
+        <!-- Mostra il form automaticamente in forma di paragrafi -->
+        <div style="margin-bottom: 20px; font-size: 1.1rem; line-height: 1.8;">
+            {{ form.as_p }}
+        </div>
+        
+        <div style="display: flex; gap: 15px; margin-top: 30px;">
+            <button type="submit" class="btn" style="flex: 1; padding: 12px; font-size: 1.1rem;">💾 Salva Modifiche</button>
+            <a href="{% url 'dashboard_admin' %}" style="flex: 1; text-align: center; padding: 12px; background: #e5e7eb; color: #374151; font-weight: bold; border-radius: 8px; text-decoration: none;">Annulla</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

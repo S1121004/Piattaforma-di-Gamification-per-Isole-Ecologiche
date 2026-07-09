@@ -1,0 +1,68 @@
+{% extends 'gestione_rifiuti/base.html' %}
+
+{% block title %}Punto Cassa - EcoGestione{% endblock %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+    
+    <h2 style="text-align: center; color: #1f2937; margin-bottom: 10px;">⚖️ Punto Accettazione Rifiuti</h2>
+    <p style="text-align: center; color: #6b7280; margin-bottom: 30px;">Inserisci il Codice Fiscale del cittadino e il peso del materiale consegnato.</p>
+
+    <!-- MESSAGGI DI SUCCESSO O ERRORE -->
+    {% if successo %}
+        <div style="background-color: #d1fae5; color: #065f46; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+            ✅ {{ successo }}
+        </div>
+    {% endif %}
+    
+    {% if errore %}
+        <div style="background-color: #fee2e2; color: #991b1b; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: bold;">
+            ❌ {{ errore }}
+        </div>
+    {% endif %}
+
+    <!-- FORM DI INSERIMENTO -->
+    <form method="POST" action="" style="background: #f9fafb; padding: 25px; border-radius: 10px; border: 1px solid #e5e7eb;">
+        {% csrf_token %}
+        
+        <!-- Campo: Codice Fiscale -->
+        <div style="margin-bottom: 20px;">
+            <label for="cf_cittadino" style="display: block; font-weight: bold; margin-bottom: 8px; color: #374151;">Codice Fiscale Cittadino</label>
+            <input type="text" id="cf_cittadino" name="cf_cittadino" required 
+                   style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; text-transform: uppercase;" 
+                   placeholder="Es. BNCMRC80A01H501X">
+        </div>
+
+        <div style="display: flex; gap: 20px; margin-bottom: 25px;">
+            <!-- Campo: Tipologia Rifiuto (Menu a tendina) -->
+            <div style="flex: 2;">
+                <label for="rifiuto_id" style="display: block; font-weight: bold; margin-bottom: 8px; color: #374151;">Tipologia Rifiuto</label>
+                <select id="rifiuto_id" name="rifiuto_id" required 
+                        style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem; background: white;">
+                    <option value="">-- Seleziona Rifiuto --</option>
+                    {% for rifiuto in rifiuti %}
+                        <option value="{{ rifiuto.id }}">{{ rifiuto.nome }} ({{ rifiuto.punti_per_unita }} pt / {{ rifiuto.unita_di_misura }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Campo: Quantità -->
+            <div style="flex: 1;">
+                <label for="quantita" style="display: block; font-weight: bold; margin-bottom: 8px; color: #374151;">Quantità</label>
+                <input type="number" id="quantita" name="quantita" step="0.01" min="0.01" required 
+                       style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 1rem;" 
+                       placeholder="Es. 2.5">
+            </div>
+        </div>
+
+        <!-- Pulsante di Invio -->
+        <button type="submit" style="width: 100%; padding: 15px; background-color: #3b82f6; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: background 0.2s;">
+            Registra Conferimento e Assegna Punti
+        </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="/" style="color: #6b7280; text-decoration: none;">&larr; Torna alla Home</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends 'gestione_rifiuti/base.html' %}
+
+{% block title %}Il mio Profilo - EcoGestione{% endblock %}
+
+{% block content %}
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 20px; margin-bottom: 30px;">
+        <h1>Profilo Cittadino 👤</h1>
+        <div style="text-align: right;">
+            <p style="margin: 0; color: #6b7280;">Codice Fiscale:</p>
+            <strong style="font-size: 1.1rem;">{{ cittadino.codice_fiscale }}</strong>
+        </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+        
+        <div>
+            <h3 style="color: #1f2937; border-bottom: 2px solid #10b981; padding-bottom: 5px; display: inline-block;">Dati Anagrafici</h3>
+            <p><strong>Nome:</strong> {{ cittadino.utente.first_name }}</p>
+            <p><strong>Cognome:</strong> {{ cittadino.utente.last_name }}</p>
+            <p><strong>Email:</strong> {{ cittadino.utente.email }}</p>
+            <p><strong>Indirizzo:</strong> {{ cittadino.indirizzo }}</p>
+            
+            {% if cittadino.tessera_sanitaria %}
+                <p><strong>Tessera Sanitaria:</strong> {{ cittadino.tessera_sanitaria }}</p>
+            {% endif %}
+        </div>
+
+        <div style="background: #f9fafb; padding: 25px; border-radius: 12px; border: 1px solid #e5e7eb; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+            <h3 style="margin-top: 0; color: #1f2937;">Il tuo Bilancio Green</h3>
+            <div style="font-size: 3rem; margin: 15px 0;">🌿</div>
+            <p style="font-size: 1.1rem; margin-bottom: 5px; color: #6b7280;">Saldo Attuale:</p>
+            <div style="font-size: 2.8rem; font-weight: 800; color: #10b981; margin-bottom: 25px;">
+                {{ cittadino.saldo_ecopunti }} <span style="font-size: 1rem; color: #6b7280; font-weight: normal;">pt</span>
+            </div>
+            
+            <a href="{% url 'area_riscatto' %}" class="btn btn-oro" style="width: 100%; box-sizing: border-box; padding: 12px; font-size: 1.1rem;">
+                🎁 Vai all'Area Riscatto
+            </a>
+        </div>
+
+    </div>
+
+    <hr style="margin: 40px 0; border: none; border-top: 1px solid #e5e7eb;">
+
+    <h3 style="color: #1f2937;">Storico Conferimenti</h3>
+    <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <thead style="background: #f3f4f6; color: #374151;">
+            <tr>
+                <th style="padding: 12px; text-align: left;">Data</th>
+                <th style="padding: 12px; text-align: left;">Materiale</th>
+                <th style="padding: 12px; text-align: left;">Quantità</th>
+                <th style="padding: 12px; text-align: right;">Punti</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in storico %}
+            <tr style="border-bottom: 1px solid #e5e7eb;">
+                <td style="padding: 12px;">{{ record.data_ora|date:"d/m/Y H:i" }}</td>
+                <td style="padding: 12px; font-weight: bold;">{{ record.rifiuto.nome }}</td>
+                <td style="padding: 12px;">{{ record.quantita }} {{ record.rifiuto.unita_di_misura }}</td>
+                <td style="padding: 12px; color: #10b981; font-weight: bold; text-align: right;">+{{ record.punti_generati }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center; color: #9ca3af; padding: 30px; font-style: italic;">
+                    Non hai ancora effettuato conferimenti presso l'Isola Ecologica.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'gestione_rifiuti/base.html' %}
+
+{% block title %}Home - EcoGestione{% endblock %}
+
+{% block content %}
+
+    <!-- CONTROLLO RUOLI: COSA VEDONO GLI UTENTI -->
+    {% if user.is_superuser %}
+        <!-- MESSAGGIO PER L'AMMINISTRATORE -->
+        <div style="text-align: center; margin-bottom: 40px; padding: 40px; background: #f3f4f6; border-radius: 15px; border: 1px solid #e5e7eb;">
+            <h2 style="color: #1f2937; margin-top: 0;">Benvenuto, Amministratore! ⚙️</h2>
+            <p style="color: #6b7280; font-size: 1.1rem;">Usa il menu in alto per accedere al Pannello di Controllo e gestire il sistema.</p>
+        </div>
+
+    {% elif user.operatoreecologico %}
+        <!-- MESSAGGIO PER L'OPERATORE ECOLOGICO -->
+        <div style="text-align: center; margin-bottom: 40px; padding: 40px; background: #f3f4f6; border-radius: 15px; border: 1px solid #e5e7eb;">
+            <h2 style="color: #1f2937; margin-top: 0;">Benvenuto, Operatore! 👷‍♂️</h2>
+            <p style="color: #6b7280; font-size: 1.1rem;">Usa il menu in alto per accedere al Punto Cassa e registrare i conferimenti.</p>
+        </div>
+
+    {% else %}
+        <!-- BANNER PROMOZIONALE (Solo per Cittadini e Visitatori non loggati) -->
+        <div style="text-align: center; margin-bottom: 40px; background: #f0fdf4; padding: 40px 20px; border-radius: 15px; border: 1px solid #bbf7d0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+            <h1 style="color: #166534; font-size: 2.5rem; margin-bottom: 15px; margin-top: 0;">Benvenuto all'Isola Ecologica! ♻️</h1>
+            
+            <p style="font-size: 1.2rem; color: #15803d; line-height: 1.6; max-width: 600px; margin: 0 auto;">
+                Trasforma la tua raccolta differenziata in vantaggi concreti.<br>
+                Conferisci i rifiuti, accumula <strong>EcoPunti</strong> e scegli tu come essere premiato: 
+                <strong>sconti sulla TARI</strong> o <strong>servizi pubblici gratuiti</strong>!
+            </p>
+
+            <!-- PULSANTI DINAMICI -->
+            <div style="margin-top: 30px;">
+                {% if not user.is_authenticated %}
+                    <a href="/registrazione/" class="btn" style="padding: 12px 30px; font-size: 1.1rem; margin-right: 15px;">Inizia Ora (Registrati)</a>
+                    <a href="/login/" class="btn" style="background: white; color: var(--primary); border: 2px solid var(--primary); padding: 10px 30px; font-size: 1.1rem;">Accedi</a>
+                {% else %}
+                    <!-- Questo pulsante lo vede solo il Cittadino loggato -->
+                    <a href="/area-riscatto/" class="btn btn-oro" style="padding: 14px 40px; font-size: 1.2rem;">🎁 Scopri i Premi</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- TABELLA DEI PUNTEGGI (Rimane uguale e visibile a tutti, è utile anche per l'operatore) -->
+    <h3 style="text-align: center; margin-bottom: 20px; color: #1f2937;">Quanto valgono i tuoi rifiuti? 📊</h3>
+    
+    <table style="width: 100%; border-collapse: collapse; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-radius: 12px; overflow: hidden;">
+        <thead style="background: #10b981; color: white;">
+            <tr>
+                <th style="padding: 15px; text-align: left; font-size: 1.1rem;">Tipologia di Rifiuto</th>
+                <th style="padding: 15px; text-align: right; font-size: 1.1rem;">Punti Assegnati</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rifiuto in rifiuti %}
+                <tr style="border-bottom: 1px solid #f3f4f6;">
+                    <td style="padding: 15px; font-size: 1.1rem; color: #374151;">
+                        <strong>{{ rifiuto.nome }}</strong>
+                    </td>
+                    <td style="padding: 15px; text-align: right; color: #10b981; font-weight: 800; font-size: 1.2rem;">
+                        +{{ rifiuto.punti_per_unita }} pt 
+                        <span style="color: #9ca3af; font-weight: normal; font-size: 0.9rem;">/ {{ rifiuto.unita_di_misura }}</span>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2" style="text-align: center; color: #6b7280; padding: 40px; font-style: italic;">
+                        Nessun rifiuto è stato ancora configurato dal Comune.
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
